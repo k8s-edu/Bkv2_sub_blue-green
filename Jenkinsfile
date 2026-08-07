@@ -29,7 +29,7 @@ pipeline {
   stages {
     stage('git scm update'){
       steps {
-        git url: 'https://github.com/k8s-edu/Bkv2_sub_blue-green-pipeline.git', branch: 'main'
+        git url: 'https://github.com/k8s-edu/Bkv2_sub_blue-green.git', branch: 'main'
       }
     }
     stage('define tag'){
@@ -80,7 +80,7 @@ pipeline {
               -o jsonpath --template="{.items[0].status.readyReplicas}" \
               -n default)
               echo "total replicas: $replicas, ready replicas: $ready"
-              if [ "$ready" -eq "$replicas" ]; then
+              if [ "${ready:-0}" -eq "${replicas:-0}" ]; then
                 echo "tag change and build deployment file by kustomize" 
                 kustomize edit add label deploy:$tag -f
                 kustomize build . | kubectl apply -f -
