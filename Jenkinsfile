@@ -80,7 +80,7 @@ pipeline {
               -o jsonpath --template="{.items[0].status.readyReplicas}" \
               -n default)
               echo "total replicas: $replicas, ready replicas: $ready"
-              if [ -n "$replicas" ] && [ "${ready:-0}" -eq "$replicas" ]; then
+              if [ "$ready" -eq "$replicas" ]; then
                 echo "tag change and build deployment file by kustomize" 
                 kustomize edit add label deploy:$tag -f
                 kustomize build . | kubectl apply -f -
